@@ -2,10 +2,12 @@ import '../../../data/repositories/usuarios_repository.dart';
 
 import 'package:material_ui/material_ui.dart';
 
-import '../../core/ui/boton_accion.dart';
-import '../../core/ui/campo_texto.dart';
-import '../../core/ui/pagina.dart';
-import '../../core/ui/titulo_seccion.dart';
+import '../../core/ui/controles/boton_accion.dart';
+import '../../core/ui/controles/campo_texto.dart';
+import '../../core/ui/controles/enlace_accion.dart';
+import '../../core/ui/estructura/barra_superior.dart';
+import '../../core/ui/estructura/scaffold_app.dart';
+import '../../core/ui/textos/titulo_principal.dart';
 import '../view_models/acceso_view_model.dart';
 
 class RegistroScreen extends StatefulWidget {
@@ -33,11 +35,13 @@ class _RegistroScreenState extends State<RegistroScreen> {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: _viewModel,
-    builder: (context, child) => Pagina(
+    builder: (context, child) => ScaffoldApp(
       titulo: 'Crear cuenta',
+      barra: const BarraSuperior(),
       hijos: [
-        const TituloSeccion(
+        const TituloPrincipal(
           'Tu próximo encuentro empieza aquí',
+          centrado: true,
           subtitulo:
               'Registro de ejemplo. Accede después desde el inicio de sesión.',
         ),
@@ -64,13 +68,16 @@ class _RegistroScreenState extends State<RegistroScreen> {
           oculto: true,
           icono: Icons.lock_outline,
         ),
+        const SizedBox(height: 8),
         BotonAccion(
           texto: 'Crear cuenta de ejemplo',
           alPulsar: () => Navigator.of(context).pop(),
         ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Volver al inicio de sesión'),
+        const SizedBox(height: 4),
+        EnlaceAccion(
+          texto: '¿Ya tienes cuenta? Inicia sesión',
+          alPulsar: () => Navigator.of(context).pop(),
+          centrado: true,
         ),
       ],
     ),

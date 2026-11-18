@@ -1,35 +1,24 @@
-import '../../../data/repositories/espacios_repository.dart';
 import '../../../data/repositories/usuarios_repository.dart';
-import '../../../data/repositories/reservas_repository.dart';
-import '../../../data/repositories/comentarios_repository.dart';
-import '../../../data/repositories/disponibilidad_repository.dart';
 
 import 'package:material_ui/material_ui.dart';
 
-import '../../core/ui/boton_accion.dart';
-import '../../core/ui/campo_texto.dart';
-import '../../core/ui/pagina.dart';
-import '../../core/ui/titulo_seccion.dart';
-import '../../navegacion/ui/inicio_screen.dart';
+import '../../core/ui/controles/boton_accion.dart';
+import '../../core/ui/controles/campo_texto.dart';
+import '../../core/ui/controles/enlace_accion.dart';
+import '../../core/ui/estructura/scaffold_app.dart';
+import '../../core/ui/textos/titulo_principal.dart';
 import '../view_models/acceso_view_model.dart';
 import 'registro_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
     super.key,
-    required this.espaciosRepository,
     required this.usuariosRepository,
-    required this.reservasRepository,
-    required this.comentariosRepository,
-    required this.disponibilidadRepository,
-    required this.fechaReferencia,
+    required this.crearInicio,
   });
-  final EspaciosRepository espaciosRepository;
   final UsuariosRepository usuariosRepository;
-  final ReservasRepository reservasRepository;
-  final ComentariosRepository comentariosRepository;
-  final DisponibilidadRepository disponibilidadRepository;
-  final DateTime fechaReferencia;
+
+  final Widget Function() crearInicio;
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -50,16 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _entrar() {
+    _viewModel.acceder();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute<void>(
-        builder: (context) => InicioScreen(
-          espaciosRepository: widget.espaciosRepository,
-          usuariosRepository: widget.usuariosRepository,
-          reservasRepository: widget.reservasRepository,
-          comentariosRepository: widget.comentariosRepository,
-          disponibilidadRepository: widget.disponibilidadRepository,
-          fechaReferencia: widget.fechaReferencia,
-        ),
+        builder: (context) => widget.crearInicio(),
       ),
       (route) => false,
     );
@@ -77,26 +60,22 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: _viewModel,
-    builder: (context, child) => Pagina(
-      titulo: 'EspaiReserva',
+    builder: (context, child) => ScaffoldApp(
+      titulo: 'Iniciar sesión',
       hijos: [
-        const SizedBox(height: 24),
-        Icon(
-          Icons.space_dashboard_rounded,
-          size: 64,
-          color: Theme.of(context).colorScheme.primary,
+        Image.asset(
+          'assets/images/logo_espaireserva.png',
+          height: 240,
+          semanticLabel: 'Logotipo de espaireserva',
         ),
-        const SizedBox(height: 16),
-        Text(
+        const SizedBox(height: 20),
+        const TituloPrincipal(
           'Un espacio para\ncada encuentro.',
-          style: Theme.of(context).textTheme.headlineLarge
-              ?.copyWith(fontWeight: FontWeight.bold),
+          grande: true,
+          centrado: true,
+          subtitulo:
+              'Reúne a tu equipo, comparte ideas y celebra. Encuentra tu próximo espacio.',
         ),
-        const SizedBox(height: 12),
-        const Text(
-          'Reúne a tu equipo, comparte ideas y celebra. Encuentra tu próximo espacio.',
-        ),
-        const TituloSeccion('Te damos la bienvenida'),
         CampoTexto(
           etiqueta: 'Correo electrónico',
           inicial: _viewModel.correo,
@@ -109,41 +88,43 @@ class _LoginScreenState extends State<LoginScreen> {
           oculto: true,
           icono: Icons.lock_outline,
         ),
+        const SizedBox(height: 8),
         BotonAccion(
-          texto: 'Entrar',
-          icono: Icons.arrow_forward,
-          alPulsar: () {
-            _viewModel.acceder();
-            _entrar();
-          },
+          texto: 'Entrar con correo',
+          alPulsar: _entrar,
         ),
-        const SizedBox(height: 16),
-        const Center(child: Text('O continúa con')),
-        BotonAccion(
-          texto: 'Google',
-          secundario: true,
-          icono: Icons.account_circle_outlined,
-          alPulsar: () {
-            _viewModel.acceder();
-            _entrar();
-          },
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Expanded(
+              child: BotonAccion(
+                texto: 'Google',
+                secundario: true,
+                icono: Icons.account_circle_outlined,
+                alPulsar: _entrar,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: BotonAccion(
+                texto: 'Apple',
+                secundario: true,
+                icono: Icons.apple,
+                alPulsar: _entrar,
+              ),
+            ),
+          ],
         ),
-        BotonAccion(
-          texto: 'Apple',
-          secundario: true,
-          icono: Icons.apple,
-          alPulsar: () {
-            _viewModel.acceder();
-            _entrar();
-          },
+        const SizedBox(height: 8),
+        EnlaceAccion(
+          texto: '¿Primera vez? Crea tu cuenta',
+          alPulsar: _abrirRegistro,
+          centrado: true,
         ),
-        TextButton(
-          onPressed: _abrirRegistro,
-          child: const Text('¿Primera vez? Registrarse'),
-        ),
-        const Text(
+        Text(
           'Acceso de demostración con datos ficticios.',
           textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     ),

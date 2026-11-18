@@ -4,7 +4,8 @@ import '../../../data/repositories/usuarios_repository.dart';
 import '../../../domain/models/usuario.dart';
 
 class AccesoViewModel extends ChangeNotifier {
-  AccesoViewModel({required this._usuariosRepository});
+  AccesoViewModel({required UsuariosRepository usuariosRepository})
+    : _usuariosRepository = usuariosRepository;
   final UsuariosRepository _usuariosRepository;
   Usuario get usuario => _usuariosRepository.obtenerUsuarioDemo();
   String get correo => usuario.correo;
