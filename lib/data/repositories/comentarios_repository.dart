@@ -43,6 +43,10 @@ class ComentariosRepository {
     return List.unmodifiable(lista);
   }
 
+  List<Comentario> obtenerPorAutor(String usuarioId) => List.unmodifiable(
+    _comentarios.where((c) => c.autor.id == usuarioId),
+  );
+
   double? obtenerMedia(String id) {
     final lista = obtenerPorEspacio(id);
     return lista.isEmpty
