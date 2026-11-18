@@ -5,3 +5,9 @@ analyzer:
     - build/**
     - android/**
     - web/**
+
+linter:
+  rules:
+    # Este lint propone parámetros nombrados privados (`required this._campo`),
+    # que no todos los analizadores (p. ej. el del IDE) aceptan todavía.
+    prefer_initializing_formals: false

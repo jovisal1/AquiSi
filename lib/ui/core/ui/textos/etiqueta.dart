@@ -1,20 +1,26 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../config/tema_app.dart';
+
 class Etiqueta extends StatelessWidget {
   const Etiqueta({super.key, required this.texto, this.icono, this.color});
   final String texto;
   final IconData? icono;
   final Color? color;
+
   @override
   Widget build(BuildContext context) {
-    final tinta = color ?? Theme.of(context).colorScheme.primary;
+    final tinta = color ?? TemaApp.tinta;
+    final fondo = color == null
+        ? TemaApp.superficie
+        : color!.withValues(alpha: 0.10);
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: tinta.withValues(alpha: 0.06),
-        border: Border.all(color: tinta.withValues(alpha: 0.2)),
-        borderRadius: BorderRadius.circular(10),
+        color: fondo,
+        borderRadius: BorderRadius.circular(20),
+        border: color == null ? Border.all(color: TemaApp.borde) : null,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -24,7 +30,14 @@ class Etiqueta extends StatelessWidget {
             const SizedBox(width: 6),
           ],
           Flexible(
-            child: Text(texto, style: TextStyle(color: tinta)),
+            child: Text(
+              texto,
+              style: TextStyle(
+                color: tinta,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),
