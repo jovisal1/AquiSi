@@ -84,9 +84,9 @@ La disponibilidad se genera una vez al arrancar, usando una fecha local común. 
 
 ## Criterios visuales
 
-Identidad EspaiReserva, verde principal, fondo marfil, tarjetas blancas y colores de estado acompañados siempre de texto. Jerarquía Material con titulares, títulos de sección y cuerpo de 14–16 píxeles lógicos. Espaciados de 8/16/24 y margen de pantalla de 20. Tarjetas de 20 de radio, campos de 12, acciones principales rellenas y secundarias con borde. El tema y los componentes compartidos fijan las equivalencias.
+Estilo inspirado en el diseño de Figma «Encuentro»: fondo blanco, acento morado para selección, enlaces y navegación activa, una única acción principal negra por pantalla, acciones secundarias sobre superficie gris y paneles grises de radio 14 sin sombra. Estados de reserva y disponibilidad acompañados siempre de texto. Titulares de 26–30, títulos de sección de 17 y cuerpo de 14–16 píxeles lógicos. Espaciados de 8/12/16/24 y margen de pantalla de 20. El tema (`TemaApp`) y los componentes compartidos fijan las equivalencias; el detalle por pantalla está en [GUIA_DISENO.md](docs/GUIA_DISENO.md).
 
-Una única lista vertical por pantalla permite desplazar formularios y contenido largo. Las filas con texto usan espacio flexible y las etiquetas se distribuyen con `Wrap`. El contenido se limita a 800 píxeles en pantallas amplias. Se ha inspeccionado la web a **360 × 800 píxeles lógicos**. Las capturas representan la parte visible de cada pantalla, no todo su contenido desplazable.
+Una única lista vertical por pantalla permite desplazar formularios y contenido largo; en detalle, nueva reserva y confirmación la acción principal queda fija en la parte inferior. Las filas con texto usan espacio flexible y las etiquetas se distribuyen con `Wrap`. El contenido se limita a 800 píxeles en pantallas amplias. Las capturas de `docs/capturas/` corresponden al diseño anterior y conviene regenerarlas.
 
 ## Comprobaciones y entrega
 

@@ -20,3 +20,10 @@ Licencia: https://unsplash.com/license
 - `jardin_brisa.jpg`: https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1000&q=80
 - `jardin_brisa_02.jpg`: https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=80
 - `jardin_brisa_03.jpg`: https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1000&q=80
+## Tipografía
+
+- Montserrat (Regular, Medium, SemiBold y Bold), de Julieta Ulanovsky, publicada en Google Fonts con licencia SIL Open Font License 1.1. Los archivos están en `assets/fonts/` y se declaran en `pubspec.yaml` como una única familia, para que cada peso use su propio archivo.
+
+## Logotipo
+
+- `assets/images/logo_espaireserva.png`: logotipo de creación propia para este proyecto (puerta en arco abierta a un amanecer y el nombre en Montserrat). El original vectorial está en `docs/logo_espaireserva.svg`.

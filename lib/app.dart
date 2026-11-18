@@ -12,6 +12,9 @@ class EspaiReservaApp extends StatelessWidget {
     title: 'EspaiReserva',
     debugShowCheckedModeBanner: false,
     theme: TemaApp.crear(),
+    locale: const Locale('es', 'ES'),
+    supportedLocales: const [Locale('es', 'ES')],
+    localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: pantallaInicial,
   );
 }
