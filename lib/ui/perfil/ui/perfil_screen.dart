@@ -10,7 +10,6 @@ import '../../core/ui/controles/boton_accion.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/perfil/tarjeta_dato.dart';
 import '../../core/ui/textos/titulo_principal.dart';
 import '../../core/ui/textos/titulo_seccion.dart';
@@ -102,34 +101,40 @@ class _PerfilScreenState extends State<PerfilScreen> {
           ],
         ),
         const TituloSeccion('Preferencias'),
-        Panel(
-          hijo: SwitchListTile(
-            contentPadding: EdgeInsets.zero,
-            title: const Text('Recordatorios de encuentros'),
-            subtitle: const Text('Preferencia local durante esta sesión.'),
-            value: _viewModel.notificaciones,
-            onChanged: _viewModel.cambiarNotificaciones,
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: const Text('Recordatorios de encuentros'),
+              subtitle: const Text('Preferencia local durante esta sesión.'),
+              value: _viewModel.notificaciones,
+              onChanged: _viewModel.cambiarNotificaciones,
+            ),
           ),
         ),
         const TituloSeccion('Sobre EspaiReserva'),
-        Panel(
-          hijo: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'EspaiReserva · ${_viewModel.version}',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Un lugar para reunirse, crear y celebrar. Proyecto integrador de PMDM desarrollado con Flutter.',
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'Datos ficticios y reservas de ejemplo, sin cobros ni cuentas externas.',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'EspaiReserva · ${_viewModel.version}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Un lugar para reunirse, crear y celebrar. Proyecto integrador de PMDM desarrollado con Flutter.',
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Datos ficticios y reservas de ejemplo, sin cobros ni cuentas externas.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
           ),
         ),
         const SizedBox(height: 24),
