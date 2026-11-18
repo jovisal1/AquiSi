@@ -4,7 +4,6 @@ import '../../../domain/models/disponibilidad_dia.dart';
 import '../../../domain/models/franja_disponibilidad.dart';
 import '../../core/formatos.dart';
 import '../../core/ui/reservas/fila_franja.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/reservas/selector_dia.dart';
 
 class DisponibilidadPanel extends StatelessWidget {
@@ -32,38 +31,41 @@ class DisponibilidadPanel extends StatelessWidget {
       for (final franja in dias[indiceDia].franjas)
         if (!haPasado(franja)) franja,
     ];
-    return Panel(
-      hijo: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SelectorDia(
-            dias: [for (final d in dias) d.fecha],
-            seleccionado: indiceDia,
-            habilitados: [
-              for (final d in dias) d.franjas.any(estaDisponible),
-            ],
-            alSeleccionar: alSeleccionarDia,
-            referencia: referencia,
-          ),
-          const SizedBox(height: 8),
-          if (franjas.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                'No quedan franjas este día.',
-                style: Theme.of(context).textTheme.bodySmall,
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SelectorDia(
+              dias: [for (final d in dias) d.fecha],
+              seleccionado: indiceDia,
+              habilitados: [
+                for (final d in dias) d.franjas.any(estaDisponible),
+              ],
+              alSeleccionar: alSeleccionarDia,
+              referencia: referencia,
+            ),
+            const SizedBox(height: 8),
+            if (franjas.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'No quedan franjas este día.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
               ),
-            ),
-          for (var i = 0; i < franjas.length; i++) ...[
-            if (i > 0) const Divider(height: 1),
-            FilaFranja(
-              horario: Formatos.intervalo(franjas[i].inicio, franjas[i].fin),
-              estado: estaDisponible(franjas[i])
-                  ? EstadoFranja.libre
-                  : EstadoFranja.ocupada,
-            ),
+            for (var i = 0; i < franjas.length; i++) ...[
+              if (i > 0) const Divider(height: 1),
+              FilaFranja(
+                horario: Formatos.intervalo(franjas[i].inicio, franjas[i].fin),
+                estado: estaDisponible(franjas[i])
+                    ? EstadoFranja.libre
+                    : EstadoFranja.ocupada,
+              ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

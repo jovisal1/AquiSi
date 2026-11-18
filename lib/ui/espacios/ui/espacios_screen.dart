@@ -12,7 +12,6 @@ import '../../core/ui/espacios/espacio_tarjeta.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/controles/selector_segmentado.dart';
 import '../../core/ui/textos/titulo_principal.dart';
 import '../../core/ui/textos/titulo_seccion.dart';
@@ -111,8 +110,11 @@ class _EspaciosScreenState extends State<EspaciosScreen> {
           subtitulo: '${_viewModel.espacios.length} espacios para compartir',
         ),
         if (_viewModel.espacios.isEmpty)
-          const Panel(
-            hijo: Text('No encontramos espacios para esta búsqueda.'),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Text('No encontramos espacios para esta búsqueda.'),
+            ),
           ),
         for (final e in _viewModel.espacios)
           Padding(

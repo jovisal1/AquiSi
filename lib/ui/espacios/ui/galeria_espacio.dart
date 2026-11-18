@@ -1,63 +1,27 @@
 import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../../config/tema_app.dart';
-
-class GaleriaEspacio extends StatefulWidget {
+class GaleriaEspacio extends StatelessWidget {
   const GaleriaEspacio({
     super.key,
     required this.imagenes,
-    required this.nombre,
     required this.indice,
     required this.alCambiar,
     this.heroTag,
-    this.rellenar = false,
-    this.mostrarControles = true,
+    this.mostrarContador = true,
   });
   final List<String> imagenes;
-  final String nombre;
   final int indice;
   final ValueChanged<int> alCambiar;
-
   final String? heroTag;
-  final bool rellenar;
-
-  final bool mostrarControles;
-  @override
-  State<GaleriaEspacio> createState() => _GaleriaEspacioState();
-}
-
-class _GaleriaEspacioState extends State<GaleriaEspacio> {
-  final _controlador = PageController();
-  @override
-  void dispose() {
-    _controlador.dispose();
-    super.dispose();
-  }
-
-  void _mover(int indice) => _controlador.animateToPage(
-    indice,
-    duration: const Duration(milliseconds: 250),
-    curve: Curves.easeOut,
-  );
-
-  Widget _conHero(Widget imagen) {
-    final tag = widget.heroTag;
-    if (tag == null) return imagen;
-    return Hero(
-      tag: tag,
-      flightShuttleBuilder: (context, animacion, direccion, desde, hacia) =>
-          Image.asset(widget.imagenes.first, fit: BoxFit.cover),
-      child: imagen,
-    );
-  }
+  final bool mostrarContador;
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.imagenes.length;
-    final fotos = Stack(
+    final galeria = Stack(
       fit: StackFit.expand,
       children: [
+        // Permite deslizar las fotos también con el ratón en la web.
         ScrollConfiguration(
           behavior: const MaterialScrollBehavior().copyWith(
             dragDevices: {
@@ -67,51 +31,17 @@ class _GaleriaEspacioState extends State<GaleriaEspacio> {
             },
           ),
           child: PageView(
-            controller: _controlador,
-            onPageChanged: widget.alCambiar,
+            onPageChanged: alCambiar,
             children: [
-              for (final imagen in widget.imagenes)
-                Image.asset(
-                  imagen,
-                  fit: BoxFit.cover,
-                  semanticLabel: widget.nombre,
-                ),
+              for (final imagen in imagenes)
+                Image.asset(imagen, fit: BoxFit.cover),
             ],
           ),
         ),
-        if (widget.mostrarControles && widget.indice > 0)
+        if (mostrarContador)
           Positioned(
-            left: 8,
-            top: 0,
-            bottom: 0,
-            child: Center(
-              child: _BotonGaleria(
-                icono: Icons.chevron_left,
-                tooltip: 'Imagen anterior',
-                alPulsar: () => _mover(widget.indice - 1),
-              ),
-            ),
-          ),
-        if (widget.mostrarControles && widget.indice < total - 1)
-          Positioned(
-            right: 8,
-            top: 0,
-            bottom: 0,
-            child: Center(
-              child: _BotonGaleria(
-                icono: Icons.chevron_right,
-                tooltip: 'Imagen siguiente',
-                alPulsar: () => _mover(widget.indice + 1),
-              ),
-            ),
-          ),
-        if (widget.mostrarControles)
-          Positioned(
-          right: 16,
-          bottom: 16,
-          child: Semantics(
-            label: 'Imagen ${widget.indice + 1} de $total',
-            excludeSemantics: true,
+            right: 16,
+            bottom: 16,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
@@ -119,7 +49,7 @@ class _GaleriaEspacioState extends State<GaleriaEspacio> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '${widget.indice + 1} / $total',
+                '${indice + 1} / ${imagenes.length}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -128,59 +58,16 @@ class _GaleriaEspacioState extends State<GaleriaEspacio> {
               ),
             ),
           ),
-        ),
       ],
     );
 
-    if (widget.rellenar) return _conHero(fotos);
-
-    return Column(
-      children: [
-        _conHero(
-          ClipRRect(
-            borderRadius: BorderRadius.circular(TemaApp.radio),
-            child: AspectRatio(aspectRatio: 4 / 3, child: fotos),
-          ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var i = 0; i < total; i++)
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: i == widget.indice ? 20 : 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6),
-                  color: i == widget.indice ? TemaApp.acento : TemaApp.borde,
-                ),
-              ),
-          ],
-        ),
-      ],
+    final tag = heroTag;
+    if (tag == null) return galeria;
+    return Hero(
+      tag: tag,
+      flightShuttleBuilder: (context, animacion, direccion, desde, hacia) =>
+          Image.asset(imagenes.first, fit: BoxFit.cover),
+      child: galeria,
     );
   }
-}
-
-class _BotonGaleria extends StatelessWidget {
-  const _BotonGaleria({
-    required this.icono,
-    required this.tooltip,
-    required this.alPulsar,
-  });
-  final IconData icono;
-  final String tooltip;
-  final VoidCallback alPulsar;
-
-  @override
-  Widget build(BuildContext context) => IconButton(
-    tooltip: tooltip,
-    onPressed: alPulsar,
-    style: IconButton.styleFrom(
-      backgroundColor: Colors.white.withValues(alpha: 0.9),
-      foregroundColor: TemaApp.tinta,
-    ),
-    icon: Icon(icono),
-  );
 }

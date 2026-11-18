@@ -4,7 +4,6 @@ import '../../../config/tema_app.dart';
 import '../../../domain/models/comentario.dart';
 import '../../core/formatos.dart';
 import '../../core/ui/controles/boton_accion.dart';
-import '../../core/ui/estructura/panel.dart';
 import 'puntuacion_estrellas.dart';
 
 class OpinionesPanel extends StatefulWidget {
@@ -170,62 +169,65 @@ class _Resumen extends StatelessWidget {
     final temaTexto = Theme.of(context).textTheme;
     final valor = media;
     final maximo = distribucion.fold<int>(0, (m, n) => n > m ? n : m);
-    return Panel(
-      hijo: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    valor == null
-                        ? '–'
-                        : valor.toStringAsFixed(1).replaceAll('.', ','),
-                    style: temaTexto.displaySmall?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: TemaApp.tinta,
-                      height: 1,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  PuntuacionEstrellas(puntuacion: valor ?? 0, tamano: 14),
-                  const SizedBox(height: 4),
-                  Text(
-                    total == 0
-                        ? 'Sin opiniones'
-                        : '$total ${total == 1 ? 'opinión' : 'opiniones'}',
-                    style: temaTexto.bodySmall,
-                  ),
-                ],
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: Column(
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    for (var i = 0; i < distribucion.length; i++)
-                      _BarraReparto(
-                        estrellas: 5 - i,
-                        cantidad: distribucion[i],
-                        proporcion: maximo == 0
-                            ? 0.0
-                            : distribucion[i] / maximo,
+                    Text(
+                      valor == null
+                          ? '–'
+                          : valor.toStringAsFixed(1).replaceAll('.', ','),
+                      style: temaTexto.displaySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: TemaApp.tinta,
+                        height: 1,
                       ),
+                    ),
+                    const SizedBox(height: 6),
+                    PuntuacionEstrellas(puntuacion: valor ?? 0, tamano: 14),
+                    const SizedBox(height: 4),
+                    Text(
+                      total == 0
+                          ? 'Sin opiniones'
+                          : '$total ${total == 1 ? 'opinión' : 'opiniones'}',
+                      style: temaTexto.bodySmall,
+                    ),
                   ],
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          BotonAccion(
-            texto: 'Escribir una opinión',
-            icono: Icons.edit_rounded,
-            secundario: true,
-            alPulsar: alEscribir,
-          ),
-        ],
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    children: [
+                      for (var i = 0; i < distribucion.length; i++)
+                        _BarraReparto(
+                          estrellas: 5 - i,
+                          cantidad: distribucion[i],
+                          proporcion: maximo == 0
+                              ? 0.0
+                              : distribucion[i] / maximo,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            BotonAccion(
+              texto: 'Escribir una opinión',
+              icono: Icons.edit_rounded,
+              secundario: true,
+              alPulsar: alEscribir,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -242,53 +244,49 @@ class _BarraReparto extends StatelessWidget {
   final double proporcion;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: '$estrellas estrellas: $cantidad',
-    excludeSemantics: true,
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.5),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 12,
-            child: Text(
-              '$estrellas',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: TemaApp.textoSecundario,
-              ),
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 2.5),
+    child: Row(
+      children: [
+        SizedBox(
+          width: 12,
+          child: Text(
+            '$estrellas',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: TemaApp.textoSecundario,
             ),
           ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: Stack(
-                children: [
-                  Container(height: 7, color: TemaApp.superficieAtenuada),
-                  FractionallySizedBox(
-                    widthFactor: proporcion,
-                    child: Container(height: 7, color: TemaApp.acento),
-                  ),
-                ],
-              ),
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Stack(
+              children: [
+                Container(height: 7, color: TemaApp.superficieAtenuada),
+                FractionallySizedBox(
+                  widthFactor: proporcion,
+                  child: Container(height: 7, color: TemaApp.acento),
+                ),
+              ],
             ),
           ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 16,
-            child: Text(
-              '$cantidad',
-              textAlign: TextAlign.right,
-              style: const TextStyle(
-                fontSize: 12,
-                color: TemaApp.textoSecundario,
-              ),
+        ),
+        const SizedBox(width: 8),
+        SizedBox(
+          width: 16,
+          child: Text(
+            '$cantidad',
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+              fontSize: 12,
+              color: TemaApp.textoSecundario,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
@@ -320,15 +318,13 @@ class _OpinionCita extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const ExcludeSemantics(
-                  child: Text(
-                    '“',
-                    style: TextStyle(
-                      fontSize: 52,
-                      height: 1,
-                      fontWeight: FontWeight.w700,
-                      color: TemaApp.acento,
-                    ),
+                const Text(
+                  '“',
+                  style: TextStyle(
+                    fontSize: 52,
+                    height: 1,
+                    fontWeight: FontWeight.w700,
+                    color: TemaApp.acento,
                   ),
                 ),
                 const Spacer(),
@@ -368,21 +364,24 @@ class _OpinionCompleta extends StatelessWidget {
   final DateTime referencia;
 
   @override
-  Widget build(BuildContext context) => Panel(
-    hijo: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _Autor(comentario: comentario, referencia: referencia),
-            ),
-            PuntuacionEstrellas(puntuacion: comentario.puntuacion, tamano: 14),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Text(comentario.texto),
-      ],
+  Widget build(BuildContext context) => Card(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: _Autor(comentario: comentario, referencia: referencia),
+              ),
+              PuntuacionEstrellas(puntuacion: comentario.puntuacion, tamano: 14),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(comentario.texto),
+        ],
+      ),
     ),
   );
 }

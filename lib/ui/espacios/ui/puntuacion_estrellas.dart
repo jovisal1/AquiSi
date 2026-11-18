@@ -23,7 +23,7 @@ class PuntuacionEstrellas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final seleccionar = alSeleccionar;
-    final estrellas = Row(
+    return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         for (var indice = 0; indice < 5; indice++)
@@ -38,13 +38,5 @@ class PuntuacionEstrellas extends StatelessWidget {
             ),
       ],
     );
-    final texto = puntuacion.toStringAsFixed(1).replaceAll('.', ',');
-    return seleccionar == null
-        ? Semantics(
-            label: '$texto de 5 estrellas',
-            excludeSemantics: true,
-            child: estrellas,
-          )
-        : estrellas;
   }
 }
