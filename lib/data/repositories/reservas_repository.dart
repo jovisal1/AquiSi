@@ -12,7 +12,7 @@ class ReservasRepository {
   }) {
     final origen = service.leerReservas();
     comprobarIdentificadores(origen.map((r) => r.id));
-    _reservas = List.unmodifiable(
+    _reservas.addAll(
       origen.map((dto) {
         final espacio = espacios.obtenerPorId(dto.espacioId);
         final usuario = usuarios.obtenerPorId(dto.usuarioId);
@@ -88,7 +88,36 @@ class ReservasRepository {
       }),
     );
   }
-  late final List<Reserva> _reservas;
+  final List<Reserva> _reservas = [];
+  int _nuevas = 0;
+
+  Reserva registrar(Reserva solicitud) {
+    comprobar(solicitud.fin.isAfter(solicitud.inicio), 'Intervalo inválido');
+    comprobar(
+      solicitud.precioTotalCentimos ==
+          solicitud.tarifaHoraCentimos * solicitud.duracion.inHours +
+              solicitud.totalServiciosCentimos,
+      'Importe incoherente',
+    );
+    _nuevas++;
+    final reserva = Reserva(
+      id: 'app-$_nuevas',
+      espacio: solicitud.espacio,
+      usuario: solicitud.usuario,
+      actividad: solicitud.actividad,
+      inicio: solicitud.inicio,
+      fin: solicitud.fin,
+      asistentes: solicitud.asistentes,
+      estado: solicitud.estado,
+      serviciosContratados: solicitud.serviciosContratados,
+      tarifaHoraCentimos: solicitud.tarifaHoraCentimos,
+      precioTotalCentimos: solicitud.precioTotalCentimos,
+      moneda: solicitud.moneda,
+    );
+    _reservas.add(reserva);
+    return reserva;
+  }
+
   List<Reserva> obtenerPorUsuario(String id) =>
       List.unmodifiable(_reservas.where((r) => r.usuario.id == id));
   Reserva? obtenerPorId(String id) {

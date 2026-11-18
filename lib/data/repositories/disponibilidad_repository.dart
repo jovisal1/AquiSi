@@ -59,9 +59,17 @@ class DisponibilidadRepository {
     );
   }
   late final List<DisponibilidadDia> _dias;
-  List<DisponibilidadDia> obtenerSieteDias(String id, DateTime desde) {
+  List<DisponibilidadDia> obtenerSieteDias(String id, DateTime desde) =>
+      obtenerDias(id, desde, 7);
+
+  List<DisponibilidadDia> obtenerDias(
+    String id,
+    DateTime desde,
+    int cantidad,
+  ) {
+    comprobar(cantidad > 0, 'Periodo vacío');
     final inicio = DateTime(desde.year, desde.month, desde.day);
-    final fin = DateTime(inicio.year, inicio.month, inicio.day + 7);
+    final fin = DateTime(inicio.year, inicio.month, inicio.day + cantidad);
     final lista =
         _dias
             .where(
@@ -72,7 +80,7 @@ class DisponibilidadRepository {
             )
             .toList()
           ..sort((a, b) => a.fecha.compareTo(b.fecha));
-    comprobar(lista.length == 7, 'Semana incompleta en la fuente');
+    comprobar(lista.length == cantidad, 'Periodo incompleto en la fuente');
     return List.unmodifiable(lista);
   }
 }

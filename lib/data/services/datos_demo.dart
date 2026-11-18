@@ -368,8 +368,8 @@ final comentariosDemo = <ComentarioDto>[
     fechaIso: '2026-10-25T18:00:00',
   ),
 ];
-// Fecha de referencia compartida por toda la demostracion.
 final fechaReferenciaDemo = DateTime.now();
+const diasDisponibilidadDemo = 60;
 final disponibilidadDemo = crearDisponibilidadDemo(fechaReferenciaDemo);
 List<DisponibilidadDiaDto> crearDisponibilidadDemo(DateTime referencia) {
   final resultado = <DisponibilidadDiaDto>[];
@@ -378,7 +378,7 @@ List<DisponibilidadDiaDto> crearDisponibilidadDemo(DateTime referencia) {
     espacioIndex < espaciosDemo.length;
     espacioIndex++
   ) {
-    for (var diaIndex = 0; diaIndex < 7; diaIndex++) {
+    for (var diaIndex = 0; diaIndex < diasDisponibilidadDemo; diaIndex++) {
       final dia = DateTime(
         referencia.year,
         referencia.month,
