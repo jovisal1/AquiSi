@@ -7,7 +7,6 @@ import '../../core/ui/controles/enlace_accion.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/controles/selector_segmentado.dart';
 import '../../core/ui/textos/titulo_principal.dart';
 import '../view_models/mis_reservas_view_model.dart';
@@ -82,27 +81,30 @@ class _MisReservasScreenState extends State<MisReservasScreen> {
           ),
           const SizedBox(height: 16),
           if (_viewModel.visibles.isEmpty)
-            Panel(
-              hijo: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _viewModel.verHistorial
-                        ? 'Aún no hay reservas en tu historial.'
-                        : 'No tienes reservas próximas.',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Explora los espacios y prepara tu próximo encuentro.',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  if (widget.alExplorar != null)
-                    EnlaceAccion(
-                      texto: 'Explorar espacios',
-                      alPulsar: widget.alExplorar,
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _viewModel.verHistorial
+                          ? 'Aún no hay reservas en tu historial.'
+                          : 'No tienes reservas próximas.',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                ],
+                    const SizedBox(height: 4),
+                    Text(
+                      'Explora los espacios y prepara tu próximo encuentro.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    if (widget.alExplorar != null)
+                      EnlaceAccion(
+                        texto: 'Explorar espacios',
+                        alPulsar: widget.alExplorar,
+                      ),
+                  ],
+                ),
               ),
             ),
           for (final r in _viewModel.visibles)

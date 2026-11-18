@@ -31,135 +31,131 @@ class ReservaTicket extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
-      child: Semantics(
-        button: true,
-        expanded: desplegada,
-        child: Card(
-          margin: EdgeInsets.zero,
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: alPulsar,
-            child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    IntrinsicHeight(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _BloqueFecha(
-                            fecha: r.inicio,
-                            ancho: _anchoFecha,
-                            atenuada: atenuada,
-                          ),
-                          const _LineaPerforada(),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(
-                                14,
-                                14,
-                                16,
-                                14,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 7,
-                                        height: 7,
-                                        decoration: BoxDecoration(
-                                          color: colorEstadoReserva,
-                                          shape: BoxShape.circle,
-                                        ),
+      child: Card(
+        margin: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: alPulsar,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _BloqueFecha(
+                          fecha: r.inicio,
+                          ancho: _anchoFecha,
+                          atenuada: atenuada,
+                        ),
+                        const _LineaPerforada(),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              14,
+                              14,
+                              16,
+                              14,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 7,
+                                      height: 7,
+                                      decoration: BoxDecoration(
+                                        color: colorEstadoReserva,
+                                        shape: BoxShape.circle,
                                       ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        etiquetaEstado(r.estado).toUpperCase(),
-                                        style: temaTexto.labelSmall?.copyWith(
-                                          color: colorEstadoReserva,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    r.espacio.nombre,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: temaTexto.titleMedium?.copyWith(
-                                      fontSize: 17,
                                     ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    '${Formatos.intervalo(r.inicio, r.fin)} · ${r.actividad}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: temaTexto.bodySmall,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          '${r.asistentes} asistentes',
-                                          style: temaTexto.bodySmall,
-                                        ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      etiquetaEstado(r.estado).toUpperCase(),
+                                      style: temaTexto.labelSmall?.copyWith(
+                                        color: colorEstadoReserva,
                                       ),
-                                      Text(
-                                        Formatos.dinero(
-                                          r.precioTotalCentimos,
-                                          r.moneda,
-                                        ),
-                                        style: temaTexto.titleMedium,
-                                      ),
-                                      const SizedBox(width: 4),
-                                      AnimatedRotation(
-                                        turns: desplegada ? 0.5 : 0,
-                                        duration: const Duration(
-                                          milliseconds: 200,
-                                        ),
-                                        child: const Icon(
-                                          Icons.expand_more_rounded,
-                                          size: 20,
-                                          color: TemaApp.textoSecundario,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  r.espacio.nombre,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: temaTexto.titleMedium?.copyWith(
+                                    fontSize: 17,
                                   ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${Formatos.intervalo(r.inicio, r.fin)} · ${r.actividad}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: temaTexto.bodySmall,
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        '${r.asistentes} asistentes',
+                                        style: temaTexto.bodySmall,
+                                      ),
+                                    ),
+                                    Text(
+                                      Formatos.dinero(
+                                        r.precioTotalCentimos,
+                                        r.moneda,
+                                      ),
+                                      style: temaTexto.titleMedium,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    AnimatedRotation(
+                                      turns: desplegada ? 0.5 : 0,
+                                      duration: const Duration(
+                                        milliseconds: 200,
+                                      ),
+                                      child: const Icon(
+                                        Icons.expand_more_rounded,
+                                        size: 20,
+                                        color: TemaApp.textoSecundario,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    AnimatedSize(
-                      duration: const Duration(milliseconds: 200),
-                      curve: Curves.easeOutCubic,
-                      alignment: Alignment.topCenter,
-                      child: desplegada
-                          ? _Detalle(reserva: r)
-                          : const SizedBox(width: double.infinity),
-                    ),
-                  ],
-                ),
+                  ),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeOutCubic,
+                    alignment: Alignment.topCenter,
+                    child: desplegada
+                        ? _Detalle(reserva: r)
+                        : const SizedBox(width: double.infinity),
+                  ),
+                ],
+              ),
+              const Positioned(
+                left: _anchoFecha - _muesca / 2,
+                top: -_muesca / 2,
+                child: _Muesca(diametro: _muesca),
+              ),
+              if (!desplegada)
                 const Positioned(
                   left: _anchoFecha - _muesca / 2,
-                  top: -_muesca / 2,
+                  bottom: -_muesca / 2,
                   child: _Muesca(diametro: _muesca),
                 ),
-                if (!desplegada)
-                  const Positioned(
-                    left: _anchoFecha - _muesca / 2,
-                    bottom: -_muesca / 2,
-                    child: _Muesca(diametro: _muesca),
-                  ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

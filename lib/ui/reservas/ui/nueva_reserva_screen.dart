@@ -18,7 +18,6 @@ import '../../core/ui/reservas/indicador_pasos.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/reservas/selector_dia.dart';
 import '../../core/ui/textos/titulo_principal.dart';
 import '../../core/ui/textos/titulo_seccion.dart';
@@ -125,71 +124,77 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
             antetitulo: 'Día y hora, extras y resumen',
             subtitulo: espacio.ubicacion,
           ),
-          Panel(
-            hijo: Column(
-              children: [
-                DatoIcono(
-                  icono: Icons.celebration_outlined,
-                  texto: _viewModel.actividad,
-                ),
-                DatoIcono(
-                  icono: Icons.people_outline,
-                  texto: '${_viewModel.asistentes} asistentes',
-                ),
-              ],
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  DatoIcono(
+                    icono: Icons.celebration_outlined,
+                    texto: _viewModel.actividad,
+                  ),
+                  DatoIcono(
+                    icono: Icons.people_outline,
+                    texto: '${_viewModel.asistentes} asistentes',
+                  ),
+                ],
+              ),
             ),
           ),
           const TituloSeccion(
             'Elige día y hora',
             subtitulo: 'Hasta dos meses vista. Los días con punto tienen huecos.',
           ),
-          Panel(
-            hijo: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        Formatos.mesAnyo(_viewModel.diaSeleccionado.fecha),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: TemaApp.tinta,
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          Formatos.mesAnyo(_viewModel.diaSeleccionado.fecha),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: TemaApp.tinta,
+                          ),
                         ),
                       ),
-                    ),
-                    TextButton.icon(
-                      onPressed: _abrirCalendario,
-                      icon: const Icon(Icons.calendar_month_outlined, size: 18),
-                      label: const Text('Ver calendario'),
-                      style: TextButton.styleFrom(
-                        foregroundColor: TemaApp.acentoTexto,
-                        minimumSize: const Size(48, 40),
+                      TextButton.icon(
+                        onPressed: _abrirCalendario,
+                        icon: const Icon(Icons.calendar_month_outlined, size: 18),
+                        label: const Text('Ver calendario'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: TemaApp.acentoTexto,
+                          minimumSize: const Size(48, 40),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                SelectorDia(
-                  dias: [for (final dia in _viewModel.dias) dia.fecha],
-                  seleccionado: _viewModel.indiceDia,
-                  habilitados: _viewModel.diasConFranjaLibre,
-                  alSeleccionar: _viewModel.seleccionarDia,
-                  referencia: _viewModel.referencia,
-                ),
-                const SizedBox(height: 8),
-                if (!_viewModel.hayFranja)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Text(
-                      'No quedan franjas libres en los próximos '
-                      '${NuevaReservaViewModel.diasReservables} días.',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  )
-                else
-                  for (final franja in _franjasVisibles()) _filaFranja(franja),
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SelectorDia(
+                    dias: [for (final dia in _viewModel.dias) dia.fecha],
+                    seleccionado: _viewModel.indiceDia,
+                    habilitados: _viewModel.diasConFranjaLibre,
+                    alSeleccionar: _viewModel.seleccionarDia,
+                    referencia: _viewModel.referencia,
+                  ),
+                  const SizedBox(height: 8),
+                  if (!_viewModel.hayFranja)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text(
+                        'No quedan franjas libres en los próximos '
+                        '${NuevaReservaViewModel.diasReservables} días.',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    )
+                  else
+                    for (final franja in _franjasVisibles()) _filaFranja(franja),
+                ],
+              ),
             ),
           ),
           const TituloSeccion(
@@ -205,39 +210,42 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
               alPulsar: () => _viewModel.alternarExtra(servicio.id),
             ),
           const TituloSeccion('Tu resumen'),
-          Panel(
-            hijo: Column(
-              children: [
-                if (inicio != null && fin != null)
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  if (inicio != null && fin != null)
+                    FilaImporte(
+                      etiqueta: 'Fecha y horario',
+                      importe:
+                          '${Formatos.fecha(inicio)} · ${Formatos.intervalo(inicio, fin)}',
+                    ),
                   FilaImporte(
-                    etiqueta: 'Fecha y horario',
-                    importe:
-                        '${Formatos.fecha(inicio)} · ${Formatos.intervalo(inicio, fin)}',
+                    etiqueta: 'Tarifa por hora',
+                    importe: dinero(espacio.precioHoraCentimos),
                   ),
-                FilaImporte(
-                  etiqueta: 'Tarifa por hora',
-                  importe: dinero(espacio.precioHoraCentimos),
-                ),
-                FilaImporte(
-                  etiqueta: 'Alquiler · ${_viewModel.horas} horas',
-                  importe: dinero(_viewModel.subtotalAlquilerCentimos),
-                ),
-                for (final s in _viewModel.seleccionados)
                   FilaImporte(
-                    etiqueta: s.nombre,
-                    importe: dinero(s.precioCentimos),
+                    etiqueta: 'Alquiler · ${_viewModel.horas} horas',
+                    importe: dinero(_viewModel.subtotalAlquilerCentimos),
                   ),
-                FilaImporte(
-                  etiqueta: 'Subtotal de extras',
-                  importe: dinero(_viewModel.subtotalExtrasCentimos),
-                ),
-                const Divider(),
-                FilaImporte(
-                  etiqueta: 'Total · IVA incluido',
-                  importe: dinero(_viewModel.totalCentimos),
-                  destacada: true,
-                ),
-              ],
+                  for (final s in _viewModel.seleccionados)
+                    FilaImporte(
+                      etiqueta: s.nombre,
+                      importe: dinero(s.precioCentimos),
+                    ),
+                  FilaImporte(
+                    etiqueta: 'Subtotal de extras',
+                    importe: dinero(_viewModel.subtotalExtrasCentimos),
+                  ),
+                  const Divider(),
+                  FilaImporte(
+                    etiqueta: 'Total · IVA incluido',
+                    importe: dinero(_viewModel.totalCentimos),
+                    destacada: true,
+                  ),
+                ],
+              ),
             ),
           ),
           const TituloSeccion('Contacto del local'),

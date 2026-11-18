@@ -10,7 +10,6 @@ import '../../core/ui/reservas/indicador_pasos.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
-import '../../core/ui/estructura/panel.dart';
 import '../../core/ui/reservas/reserva_tarjeta.dart';
 import '../../core/ui/textos/titulo_principal.dart';
 import '../view_models/confirmacion_view_model.dart';
@@ -110,22 +109,25 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen> {
         ),
         const SizedBox(height: 20),
         ReservaTarjeta(reserva: _viewModel.reserva, mostrarDesglose: true),
-        Panel(
+        Card(
           color: TemaApp.acentoSuave,
-          hijo: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Confirmación de ejemplo',
-                style: Theme.of(context).textTheme.titleMedium
-                    ?.copyWith(color: TemaApp.acentoTexto),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Conserva tu selección. Las reservas precargadas permanecen sin cambios.',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Confirmación de ejemplo',
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(color: TemaApp.acentoTexto),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Conserva tu selección. Las reservas precargadas permanecen sin cambios.',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ],
+            ),
           ),
         ),
       ],

@@ -28,48 +28,45 @@ class OpcionExtra extends StatelessWidget {
     );
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Semantics(
-        checked: seleccionada,
-        child: Material(
-          color: seleccionada ? TemaApp.acentoSuave : TemaApp.superficie,
-          shape: forma,
-          child: InkWell(
-            customBorder: forma,
-            onTap: alPulsar,
-            child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    seleccionada
-                        ? Icons.check_box_rounded
-                        : Icons.check_box_outline_blank_rounded,
-                    color: seleccionada
-                        ? TemaApp.acento
-                        : TemaApp.textoSecundario,
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(titulo, style: temaTexto.titleMedium),
-                        const SizedBox(height: 2),
-                        Text(descripcion, style: temaTexto.bodySmall),
-                        const SizedBox(height: 6),
-                        Text(
-                          precio,
-                          style: const TextStyle(
-                            color: TemaApp.acentoTexto,
-                            fontWeight: FontWeight.w700,
-                          ),
+      child: Material(
+        color: seleccionada ? TemaApp.acentoSuave : TemaApp.superficie,
+        shape: forma,
+        child: InkWell(
+          customBorder: forma,
+          onTap: alPulsar,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  seleccionada
+                      ? Icons.check_box_rounded
+                      : Icons.check_box_outline_blank_rounded,
+                  color: seleccionada
+                      ? TemaApp.acento
+                      : TemaApp.textoSecundario,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(titulo, style: temaTexto.titleMedium),
+                      const SizedBox(height: 2),
+                      Text(descripcion, style: temaTexto.bodySmall),
+                      const SizedBox(height: 6),
+                      Text(
+                        precio,
+                        style: const TextStyle(
+                          color: TemaApp.acentoTexto,
+                          fontWeight: FontWeight.w700,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
