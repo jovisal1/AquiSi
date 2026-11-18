@@ -49,25 +49,16 @@ class InsigniaUsuario extends StatelessWidget {
 
     final pulsar = alPulsar;
     if (pulsar == null) {
-      return Semantics(
-        label: 'Usuario $iniciales',
-        excludeSemantics: true,
-        child: avatar,
-      );
+      return avatar;
     }
     return Tooltip(
       message: 'Mi perfil',
-      child: Semantics(
-        button: true,
-        label: 'Mi perfil, $iniciales',
-        excludeSemantics: true,
-        child: InkResponse(
-          onTap: pulsar,
-          radius: 24,
-          child: SizedBox.square(
-            dimension: 44,
-            child: Center(child: avatar),
-          ),
+      child: InkResponse(
+        onTap: pulsar,
+        radius: 24,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Center(child: avatar),
         ),
       ),
     );

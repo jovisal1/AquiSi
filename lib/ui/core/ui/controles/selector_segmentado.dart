@@ -58,40 +58,36 @@ class _Segmento extends StatelessWidget {
   static const _duracion = Duration(milliseconds: 220);
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    selected: seleccionado,
-    child: GestureDetector(
-      onTap: alPulsar,
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
+  Widget build(BuildContext context) => GestureDetector(
+    onTap: alPulsar,
+    behavior: HitTestBehavior.opaque,
+    child: AnimatedContainer(
+      duration: _duracion,
+      curve: Curves.easeOutCubic,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: ShapeDecoration(
+        color: seleccionado ? TemaApp.superficie : Colors.transparent,
+        shape: const StadiumBorder(),
+        shadows: seleccionado
+            ? const [
+                BoxShadow(
+                  color: TemaApp.sombra,
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ]
+            : const [],
+      ),
+      child: AnimatedDefaultTextStyle(
         duration: _duracion,
-        curve: Curves.easeOutCubic,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: ShapeDecoration(
-          color: seleccionado ? TemaApp.superficie : Colors.transparent,
-          shape: const StadiumBorder(),
-          shadows: seleccionado
-              ? const [
-                  BoxShadow(
-                    color: TemaApp.sombra,
-                    blurRadius: 8,
-                    offset: Offset(0, 2),
-                  ),
-                ]
-              : const [],
+        style: TextStyle(
+          fontSize: 13.5,
+          fontWeight: seleccionado ? FontWeight.w800 : FontWeight.w600,
+          color: seleccionado ? TemaApp.tinta : TemaApp.textoSecundario,
         ),
-        child: AnimatedDefaultTextStyle(
-          duration: _duracion,
-          style: TextStyle(
-            fontSize: 13.5,
-            fontWeight: seleccionado ? FontWeight.w800 : FontWeight.w600,
-            color: seleccionado ? TemaApp.tinta : TemaApp.textoSecundario,
-          ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(texto, textAlign: TextAlign.center, maxLines: 1),
-          ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(texto, textAlign: TextAlign.center, maxLines: 1),
         ),
       ),
     ),

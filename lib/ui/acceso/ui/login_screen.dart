@@ -66,7 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
         Image.asset(
           'assets/images/logo_espaireserva.png',
           height: 240,
-          semanticLabel: 'Logotipo de espaireserva',
         ),
         const SizedBox(height: 20),
         const TituloPrincipal(

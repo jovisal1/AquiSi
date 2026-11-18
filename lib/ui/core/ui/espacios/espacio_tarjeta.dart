@@ -50,7 +50,6 @@ class EspacioTarjeta extends StatelessWidget {
                       child: Image.asset(
                         espacio.imagenAsset,
                         fit: BoxFit.cover,
-                        semanticLabel: espacio.nombre,
                       ),
                     ),
                   ),

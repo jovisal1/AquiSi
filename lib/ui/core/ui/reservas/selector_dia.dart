@@ -111,47 +111,39 @@ class _CasillaDia extends StatelessWidget {
         : habilitado
         ? TemaApp.tinta
         : TemaApp.textoSecundario.withValues(alpha: 0.5);
-    return Semantics(
-      button: true,
-      selected: seleccionado,
-      label: habilitado
-          ? Formatos.diaCorto(dia)
-          : '${Formatos.diaCorto(dia)}, sin franjas libres',
-      excludeSemantics: true,
-      child: Material(
-        color: seleccionado ? TemaApp.acento : TemaApp.superficie,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(TemaApp.radioControl),
-          side: BorderSide(
-            color: seleccionado ? TemaApp.acento : TemaApp.borde,
-          ),
+    return Material(
+      color: seleccionado ? TemaApp.acento : TemaApp.superficie,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(TemaApp.radioControl),
+        side: BorderSide(
+          color: seleccionado ? TemaApp.acento : TemaApp.borde,
         ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(TemaApp.radioControl),
-          onTap: habilitado ? alPulsar : null,
-          child: SizedBox(
-            width: _SelectorDiaState._anchoCasilla,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Column(
-                children: [
-                  Text(
-                    referencia == null
-                        ? Formatos.diaSemana(dia)
-                        : Formatos.diaRelativo(dia, referencia!),
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                      color: color,
-                    ),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(TemaApp.radioControl),
+        onTap: habilitado ? alPulsar : null,
+        child: SizedBox(
+          width: _SelectorDiaState._anchoCasilla,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: [
+                Text(
+                  referencia == null
+                      ? Formatos.diaSemana(dia)
+                      : Formatos.diaRelativo(dia, referencia!),
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: color,
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    Formatos.diaMes(dia),
-                    style: TextStyle(fontSize: 12, color: color),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  Formatos.diaMes(dia),
+                  style: TextStyle(fontSize: 12, color: color),
+                ),
+              ],
             ),
           ),
         ),

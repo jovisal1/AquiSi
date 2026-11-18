@@ -75,55 +75,49 @@ class _ElementoNavegacion extends StatelessWidget {
   static const _curva = Curves.easeOutCubic;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    button: true,
-    selected: seleccionado,
-    label: destino.etiqueta,
-    excludeSemantics: true,
-    child: InkWell(
-      onTap: alPulsar,
-      borderRadius: BorderRadius.circular(22),
-      child: AnimatedContainer(
-        duration: _duracion,
-        curve: _curva,
-        margin: const EdgeInsets.symmetric(horizontal: 3),
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: seleccionado ? TemaApp.acentoSuave : Colors.transparent,
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedScale(
-              duration: _duracion,
-              curve: _curva,
-              scale: seleccionado ? 1.1 : 1,
-              child: Icon(
-                seleccionado ? destino.iconoSeleccionado : destino.icono,
-                size: 22,
-                color: seleccionado ? TemaApp.acento : TemaApp.textoSecundario,
-              ),
+  Widget build(BuildContext context) => InkWell(
+    onTap: alPulsar,
+    borderRadius: BorderRadius.circular(22),
+    child: AnimatedContainer(
+      duration: _duracion,
+      curve: _curva,
+      margin: const EdgeInsets.symmetric(horizontal: 3),
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: seleccionado ? TemaApp.acentoSuave : Colors.transparent,
+        borderRadius: BorderRadius.circular(22),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedScale(
+            duration: _duracion,
+            curve: _curva,
+            scale: seleccionado ? 1.1 : 1,
+            child: Icon(
+              seleccionado ? destino.iconoSeleccionado : destino.icono,
+              size: 22,
+              color: seleccionado ? TemaApp.acento : TemaApp.textoSecundario,
             ),
-            const SizedBox(height: 3),
-            AnimatedDefaultTextStyle(
-              duration: _duracion,
-              curve: _curva,
-              style: TextStyle(
-                fontSize: 11.5,
-                fontWeight: seleccionado ? FontWeight.w800 : FontWeight.w600,
-                color: seleccionado
-                    ? TemaApp.acentoTexto
-                    : TemaApp.textoSecundario,
-              ),
-              child: Text(
-                destino.etiqueta,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+          ),
+          const SizedBox(height: 3),
+          AnimatedDefaultTextStyle(
+            duration: _duracion,
+            curve: _curva,
+            style: TextStyle(
+              fontSize: 11.5,
+              fontWeight: seleccionado ? FontWeight.w800 : FontWeight.w600,
+              color: seleccionado
+                  ? TemaApp.acentoTexto
+                  : TemaApp.textoSecundario,
             ),
-          ],
-        ),
+            child: Text(
+              destino.etiqueta,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ),
     ),
   );

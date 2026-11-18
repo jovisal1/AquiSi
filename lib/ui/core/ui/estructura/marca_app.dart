@@ -8,36 +8,32 @@ class MarcaApp extends StatelessWidget {
   final double tamano;
 
   @override
-  Widget build(BuildContext context) => Semantics(
-    label: 'EspaiReserva',
-    excludeSemantics: true,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SimboloMarca(tamano: tamano * 1.4),
-        SizedBox(width: tamano * 0.4),
-        Text.rich(
-          TextSpan(
-            children: [
-              const TextSpan(text: 'espai'),
-              TextSpan(
-                text: 'reserva',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: TemaApp.tinta.withValues(alpha: 0.72),
-                ),
+  Widget build(BuildContext context) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      SimboloMarca(tamano: tamano * 1.4),
+      SizedBox(width: tamano * 0.4),
+      Text.rich(
+        TextSpan(
+          children: [
+            const TextSpan(text: 'espai'),
+            TextSpan(
+              text: 'reserva',
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: TemaApp.tinta.withValues(alpha: 0.72),
               ),
-            ],
-          ),
-          style: TextStyle(
-            fontSize: tamano,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.5,
-            color: TemaApp.tinta,
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
+        style: TextStyle(
+          fontSize: tamano,
+          fontWeight: FontWeight.w700,
+          letterSpacing: -0.5,
+          color: TemaApp.tinta,
+        ),
+      ),
+    ],
   );
 }
 
