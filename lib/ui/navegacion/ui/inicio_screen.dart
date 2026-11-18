@@ -6,6 +6,7 @@ import '../../../data/repositories/disponibilidad_repository.dart';
 
 import 'package:material_ui/material_ui.dart';
 
+import '../../core/ui/estructura/barra_navegacion.dart';
 import '../../espacios/ui/espacios_screen.dart';
 import '../../perfil/ui/perfil_screen.dart';
 import '../../reservas/ui/mis_reservas_screen.dart';
@@ -19,7 +20,7 @@ class InicioScreen extends StatefulWidget {
     required this.comentariosRepository,
     required this.disponibilidadRepository,
     required this.fechaReferencia,
-    this.seccionInicial = 0,
+    required this.crearLogin,
   });
   final EspaciosRepository espaciosRepository;
   final UsuariosRepository usuariosRepository;
@@ -27,63 +28,84 @@ class InicioScreen extends StatefulWidget {
   final ComentariosRepository comentariosRepository;
   final DisponibilidadRepository disponibilidadRepository;
   final DateTime fechaReferencia;
-  final int seccionInicial;
+
+  final Widget Function() crearLogin;
   @override
   State<InicioScreen> createState() => _InicioScreenState();
 }
 
 class _InicioScreenState extends State<InicioScreen> {
-  late int _seccion;
-  late final List<Widget> _pantallas;
-  @override
-  void initState() {
-    super.initState();
-    _seccion = widget.seccionInicial;
-    _pantallas = [
-      EspaciosScreen(
-        espaciosRepository: widget.espaciosRepository,
-        usuariosRepository: widget.usuariosRepository,
-        reservasRepository: widget.reservasRepository,
-        comentariosRepository: widget.comentariosRepository,
-        disponibilidadRepository: widget.disponibilidadRepository,
-        fechaReferencia: widget.fechaReferencia,
-      ),
-      MisReservasScreen(
-        reservasRepository: widget.reservasRepository,
-        usuariosRepository: widget.usuariosRepository,
-      ),
-      PerfilScreen(
-        espaciosRepository: widget.espaciosRepository,
-        usuariosRepository: widget.usuariosRepository,
-        reservasRepository: widget.reservasRepository,
-        comentariosRepository: widget.comentariosRepository,
-        disponibilidadRepository: widget.disponibilidadRepository,
-        fechaReferencia: widget.fechaReferencia,
-      ),
-    ];
+  int _seccion = 0;
+
+  /// Cambia al volver de un recorrido para que las secciones se vuelvan a
+  /// crear y lean de nuevo los repositorios (por ejemplo, tras reservar).
+  int _recargas = 0;
+
+  void _cambiarSeccion(int seccion) => setState(() => _seccion = seccion);
+
+  void _volverASeccion(int seccion) => setState(() {
+    _seccion = seccion;
+    _recargas++;
+  });
+
+  void _cerrarSesion() {
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute<void>(builder: (context) => widget.crearLogin()),
+      (route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: IndexedStack(index: _seccion, children: _pantallas),
-    bottomNavigationBar: NavigationBar(
-      selectedIndex: _seccion,
-      onDestinationSelected: (i) => setState(() => _seccion = i),
-      destinations: const [
-        NavigationDestination(
-          icon: Icon(Icons.grid_view_outlined),
-          selectedIcon: Icon(Icons.grid_view_rounded),
-          label: 'Espacios',
+    extendBody: true,
+    body: IndexedStack(
+      key: ValueKey(_recargas),
+      index: _seccion,
+      children: [
+        EspaciosScreen(
+          espaciosRepository: widget.espaciosRepository,
+          usuariosRepository: widget.usuariosRepository,
+          reservasRepository: widget.reservasRepository,
+          comentariosRepository: widget.comentariosRepository,
+          disponibilidadRepository: widget.disponibilidadRepository,
+          fechaReferencia: widget.fechaReferencia,
+          alVerPerfil: () => _cambiarSeccion(2),
+          alVolverASeccion: _volverASeccion,
         ),
-        NavigationDestination(
-          icon: Icon(Icons.event_note_outlined),
-          selectedIcon: Icon(Icons.event_note),
-          label: 'Mis reservas',
+        MisReservasScreen(
+          reservasRepository: widget.reservasRepository,
+          usuariosRepository: widget.usuariosRepository,
+          fechaReferencia: widget.fechaReferencia,
+          alExplorar: () => _cambiarSeccion(0),
+          alVerPerfil: () => _cambiarSeccion(2),
         ),
-        NavigationDestination(
-          icon: Icon(Icons.person_outline),
-          selectedIcon: Icon(Icons.person),
-          label: 'Perfil',
+        PerfilScreen(
+          usuariosRepository: widget.usuariosRepository,
+          reservasRepository: widget.reservasRepository,
+          comentariosRepository: widget.comentariosRepository,
+          fechaReferencia: widget.fechaReferencia,
+          alCerrarSesion: _cerrarSesion,
+        ),
+      ],
+    ),
+    bottomNavigationBar: BarraNavegacion(
+      seleccionado: _seccion,
+      alSeleccionar: _cambiarSeccion,
+      destinos: const [
+        DestinoNavegacion(
+          icono: Icons.explore_outlined,
+          iconoSeleccionado: Icons.explore,
+          etiqueta: 'Explorar',
+        ),
+        DestinoNavegacion(
+          icono: Icons.calendar_today_outlined,
+          iconoSeleccionado: Icons.calendar_today,
+          etiqueta: 'Mis reservas',
+        ),
+        DestinoNavegacion(
+          icono: Icons.person_outline,
+          iconoSeleccionado: Icons.person,
+          etiqueta: 'Perfil',
         ),
       ],
     ),
