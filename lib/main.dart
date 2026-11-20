@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-import 'app.dart';
+import 'config/tema_app.dart';
 import 'data/repositories/comentarios_repository.dart';
 import 'data/repositories/disponibilidad_repository.dart';
 import 'data/repositories/espacios_repository.dart';
@@ -54,5 +54,15 @@ void main() {
     crearInicio: crearInicio,
   );
 
-  runApp(EspaiReservaApp(pantallaInicial: crearLogin()));
+  runApp(
+    MaterialApp(
+      title: 'EspaiReserva',
+      debugShowCheckedModeBanner: false,
+      theme: TemaApp.crear(),
+      locale: const Locale('es', 'ES'),
+      supportedLocales: const [Locale('es', 'ES')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      home: crearLogin(),
+    ),
+  );
 }
