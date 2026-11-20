@@ -1,3 +1,6 @@
+import '../../domain/models/reserva.dart';
+import '../../domain/models/tramo_reserva.dart';
+
 abstract final class Formatos {
   static const _diasSemana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
@@ -64,4 +67,24 @@ abstract final class Formatos {
 
   static String intervalo(DateTime inicio, DateTime fin) =>
       '${hora(inicio)}–${hora(fin)}';
+
+  static String cantidad(int n, String uno, String varios) =>
+      '$n ${n == 1 ? uno : varios}';
+
+  static String periodo(DateTime desde, DateTime hasta) {
+    final dias = DateTime(hasta.year, hasta.month, hasta.day)
+            .difference(DateTime(desde.year, desde.month, desde.day))
+            .inDays +
+        1;
+    final fechas = dias == 1
+        ? diaCorto(desde)
+        : '${diaCorto(desde)} – ${diaCorto(hasta)}';
+    return '$fechas · ${cantidad(dias, 'día', 'días')}';
+  }
+
+  static String cuando(ModalidadReserva modalidad, List<TramoReserva> tramos) =>
+      modalidad == ModalidadReserva.porDias
+      ? periodo(tramos.first.inicio, tramos.last.fin)
+      : '${diaCorto(tramos.first.inicio)} · '
+            '${tramos.map((t) => intervalo(t.inicio, t.fin)).join(', ')}';
 }

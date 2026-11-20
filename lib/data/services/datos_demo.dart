@@ -412,7 +412,11 @@ List<DisponibilidadDiaDto> crearDisponibilidadDemo(DateTime referencia) {
               dia.day,
               hora + 2,
             ).toIso8601String(),
-            disponible: (espacioIndex + diaIndex + franjaIndex) % 4 != 0,
+            // Un día de cada tres tiene una franja ocupada; el resto de días
+            // están completamente libres y se pueden reservar enteros.
+            disponible:
+                (espacioIndex + diaIndex) % 3 != 0 ||
+                franjaIndex != diaIndex % 3,
           ),
         );
       }

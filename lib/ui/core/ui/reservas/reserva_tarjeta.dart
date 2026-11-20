@@ -30,7 +30,7 @@ class ReservaTarjeta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final temaTexto = Theme.of(context).textTheme;
-    final horas = reserva.duracion.inHours;
+    final porDias = reserva.modalidad == ModalidadReserva.porDias;
     String dinero(int centimos) => Formatos.dinero(centimos, reserva.moneda);
 
     return Card(
@@ -57,7 +57,7 @@ class ReservaTarjeta extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    '${Formatos.fecha(reserva.inicio)} · ${Formatos.hora(reserva.inicio)}–${Formatos.hora(reserva.fin)} · $horas h',
+                    Formatos.cuando(reserva.modalidad, reserva.tramos),
                     style: temaTexto.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -84,12 +84,14 @@ class ReservaTarjeta extends StatelessWidget {
             if (mostrarDesglose) ...[
               const Divider(),
               FilaImporte(
-                etiqueta: 'Tarifa por hora',
-                importe: dinero(reserva.tarifaHoraCentimos),
+                etiqueta: porDias ? 'Tarifa por día' : 'Tarifa por hora',
+                importe: dinero(reserva.tarifaCentimos),
               ),
               FilaImporte(
-                etiqueta: 'Alquiler · $horas horas',
-                importe: dinero(reserva.tarifaHoraCentimos * horas),
+                etiqueta: porDias
+                    ? 'Alquiler · ${Formatos.cantidad(reserva.dias, 'día', 'días')}'
+                    : 'Alquiler · ${Formatos.cantidad(reserva.horas, 'hora', 'horas')}',
+                importe: dinero(reserva.alquilerCentimos),
               ),
               if (reserva.serviciosContratados.isEmpty)
                 const FilaImporte(etiqueta: 'Sin extras', importe: '—'),

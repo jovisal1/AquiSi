@@ -6,6 +6,7 @@ import '../../../data/repositories/disponibilidad_repository.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../domain/models/franja_disponibilidad.dart';
+import '../../../domain/models/reserva.dart';
 import '../../../config/tema_app.dart';
 import '../../core/formatos.dart';
 import '../../core/ui/estructura/barra_accion_inferior.dart';
@@ -16,6 +17,7 @@ import '../../core/ui/reservas/fila_importe.dart';
 import '../../core/ui/reservas/fila_franja.dart';
 import '../../core/ui/reservas/indicador_pasos.dart';
 import '../../core/ui/controles/insignia_usuario.dart';
+import '../../core/ui/controles/selector_segmentado.dart';
 import '../../core/ui/estructura/barra_superior.dart';
 import '../../core/ui/estructura/scaffold_app.dart';
 import '../../core/ui/reservas/selector_dia.dart';
@@ -95,8 +97,6 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
     listenable: _viewModel,
     builder: (context, child) {
       final espacio = _viewModel.espacio;
-      final inicio = _viewModel.inicio;
-      final fin = _viewModel.fin;
       String dinero(int centimos) => Formatos.dinero(centimos, espacio.moneda);
 
       return ScaffoldApp(
@@ -106,14 +106,12 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
           avatar: InsigniaUsuario(iniciales: _viewModel.iniciales),
         ),
         accionInferior: BarraAccionInferior(
-          etiqueta: inicio == null || fin == null
-              ? 'Elige una franja libre'
-              : '${Formatos.diaCorto(inicio)} · ${Formatos.intervalo(inicio, fin)}',
+          etiqueta: _resumenSeleccion(),
           valor: dinero(_viewModel.totalCentimos),
           boton: BotonAccion(
             texto: 'Confirmar',
             icono: Icons.check,
-            alPulsar: _viewModel.hayFranja ? _confirmar : null,
+            alPulsar: _viewModel.puedeConfirmar ? _confirmar : null,
             compacto: true,
           ),
         ),
@@ -121,7 +119,7 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
           const IndicadorPasos(paso: 2, total: 3),
           TituloPrincipal(
             espacio.nombre,
-            antetitulo: 'Día y hora, extras y resumen',
+            antetitulo: 'Fechas, extras y resumen',
             subtitulo: espacio.ubicacion,
           ),
           Card(
@@ -141,9 +139,11 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
               ),
             ),
           ),
-          const TituloSeccion(
-            'Elige día y hora',
-            subtitulo: 'Hasta dos meses vista. Los días con punto tienen huecos.',
+          TituloSeccion(
+            '¿Cuándo?',
+            subtitulo: _viewModel.porDias
+                ? 'Días completos seguidos, con todas sus franjas libres.'
+                : 'Una o varias franjas del mismo día.',
           ),
           Card(
             child: Padding(
@@ -151,48 +151,19 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          Formatos.mesAnyo(_viewModel.diaSeleccionado.fecha),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            color: TemaApp.tinta,
-                          ),
-                        ),
-                      ),
-                      TextButton.icon(
-                        onPressed: _abrirCalendario,
-                        icon: const Icon(Icons.calendar_month_outlined, size: 18),
-                        label: const Text('Ver calendario'),
-                        style: TextButton.styleFrom(
-                          foregroundColor: TemaApp.acentoTexto,
-                          minimumSize: const Size(48, 40),
-                        ),
-                      ),
-                    ],
+                  SelectorSegmentado(
+                    opciones: _modalidades,
+                    seleccionada: _modalidades[_viewModel.modalidad.index],
+                    alSeleccionar: (opcion) => _viewModel.cambiarModalidad(
+                      ModalidadReserva.values[_modalidades.indexOf(opcion)],
+                    ),
+                    expandir: true,
                   ),
-                  const SizedBox(height: 8),
-                  SelectorDia(
-                    dias: [for (final dia in _viewModel.dias) dia.fecha],
-                    seleccionado: _viewModel.indiceDia,
-                    habilitados: _viewModel.diasConFranjaLibre,
-                    alSeleccionar: _viewModel.seleccionarDia,
-                    referencia: _viewModel.referencia,
-                  ),
-                  const SizedBox(height: 8),
-                  if (!_viewModel.hayFranja)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                        'No quedan franjas libres en los próximos '
-                        '${NuevaReservaViewModel.diasReservables} días.',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    )
+                  const SizedBox(height: 16),
+                  if (_viewModel.porDias)
+                    ..._seleccionDias()
                   else
-                    for (final franja in _franjasVisibles()) _filaFranja(franja),
+                    ..._seleccionHoras(),
                 ],
               ),
             ),
@@ -215,18 +186,21 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  if (inicio != null && fin != null)
+                  if (_viewModel.puedeConfirmar)
                     FilaImporte(
-                      etiqueta: 'Fecha y horario',
-                      importe:
-                          '${Formatos.fecha(inicio)} · ${Formatos.intervalo(inicio, fin)}',
+                      etiqueta: 'Cuándo',
+                      importe: _resumenSeleccion(),
                     ),
                   FilaImporte(
-                    etiqueta: 'Tarifa por hora',
-                    importe: dinero(espacio.precioHoraCentimos),
+                    etiqueta: _viewModel.porDias
+                        ? 'Tarifa por día'
+                        : 'Tarifa por hora',
+                    importe: dinero(_viewModel.tarifaCentimos),
                   ),
                   FilaImporte(
-                    etiqueta: 'Alquiler · ${_viewModel.horas} horas',
+                    etiqueta: _viewModel.porDias
+                        ? 'Alquiler · ${Formatos.cantidad(_viewModel.numeroDias, 'día', 'días')}'
+                        : 'Alquiler · ${Formatos.cantidad(_viewModel.horas, 'hora', 'horas')}',
                     importe: dinero(_viewModel.subtotalAlquilerCentimos),
                   ),
                   for (final s in _viewModel.seleccionados)
@@ -254,6 +228,109 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
       );
     },
   );
+
+  static const _modalidades = ['Por horas', 'Días completos'];
+
+  String _resumenSeleccion() {
+    final tramos = _viewModel.tramos;
+    if (tramos.isEmpty) {
+      return _viewModel.porDias ? 'Elige los días' : 'Elige una o más franjas';
+    }
+    return Formatos.cuando(_viewModel.modalidad, tramos);
+  }
+
+  List<Widget> _seleccionHoras() => [
+    Row(
+      children: [
+        Expanded(
+          child: Text(
+            Formatos.mesAnyo(_viewModel.diaSeleccionado.fecha),
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              color: TemaApp.tinta,
+            ),
+          ),
+        ),
+        TextButton.icon(
+          onPressed: _abrirCalendario,
+          icon: const Icon(Icons.calendar_month_outlined, size: 18),
+          label: const Text('Ver calendario'),
+          style: TextButton.styleFrom(
+            foregroundColor: TemaApp.acentoTexto,
+            minimumSize: const Size(48, 40),
+          ),
+        ),
+      ],
+    ),
+    const SizedBox(height: 8),
+    SelectorDia(
+      dias: [for (final dia in _viewModel.dias) dia.fecha],
+      seleccionado: _viewModel.indiceDia,
+      habilitados: _viewModel.diasConFranjaLibre,
+      alSeleccionar: _viewModel.seleccionarDia,
+      referencia: _viewModel.referencia,
+    ),
+    const SizedBox(height: 8),
+    for (final franja in _franjasVisibles()) _filaFranja(franja),
+  ];
+
+  List<Widget> _seleccionDias() {
+    final desde = _viewModel.desde;
+    final hasta = _viewModel.hasta;
+    return [
+      Row(
+        children: [
+          const Icon(Icons.date_range_outlined, color: TemaApp.acentoTexto),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              desde == null || hasta == null
+                  ? 'No hay días completos libres'
+                  : Formatos.periodo(desde, hasta),
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: TemaApp.tinta,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: desde == null ? null : _elegirPeriodo,
+            style: TextButton.styleFrom(
+              foregroundColor: TemaApp.acentoTexto,
+              minimumSize: const Size(48, 44),
+            ),
+            child: const Text('Cambiar'),
+          ),
+        ],
+      ),
+    ];
+  }
+
+  Future<void> _elegirPeriodo() async {
+    final periodo = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(
+        start: _viewModel.desde!,
+        end: _viewModel.hasta!,
+      ),
+      firstDate: _viewModel.primerDia,
+      lastDate: _viewModel.ultimoDia,
+      currentDate: _viewModel.referencia,
+      helpText: 'Elige los días',
+      saveText: 'Aceptar',
+      selectableDayPredicate: (dia, _, _) => _viewModel.diaCompletoLibre(dia),
+    );
+    if (periodo == null || !mounted) return;
+    if (!_viewModel.seleccionarPeriodo(periodo.start, periodo.end)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'El periodo incluye días con franjas ocupadas. Elige días seguidos libres.',
+          ),
+        ),
+      );
+    }
+  }
 
   void _abrirCalendario() {
     final seleccionado = _viewModel.diaSeleccionado.fecha;
@@ -294,6 +371,6 @@ class _NuevaReservaScreenState extends State<NuevaReservaScreen> {
         ? EstadoFranja.libre
         : EstadoFranja.ocupada,
     seleccionada: _viewModel.estaSeleccionada(franja),
-    alPulsar: () => _viewModel.seleccionarFranja(franja),
+    alPulsar: () => _viewModel.alternarFranja(franja),
   );
 }

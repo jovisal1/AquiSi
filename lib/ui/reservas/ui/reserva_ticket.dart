@@ -92,7 +92,7 @@ class ReservaTicket extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  '${Formatos.intervalo(r.inicio, r.fin)} · ${r.actividad}',
+                                  '${_horario(r)} · ${r.actividad}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: temaTexto.bodySmall,
@@ -273,7 +273,7 @@ class _Detalle extends StatelessWidget {
           const Divider(height: 1),
           const SizedBox(height: 10),
           Text(
-            Formatos.fecha(r.inicio),
+            Formatos.cuando(r.modalidad, r.tramos),
             style: temaTexto.bodySmall,
           ),
           const SizedBox(height: 4),
@@ -297,3 +297,7 @@ class _Detalle extends StatelessWidget {
     );
   }
 }
+
+String _horario(Reserva r) => r.modalidad == ModalidadReserva.porDias
+    ? Formatos.cantidad(r.dias, 'día', 'días')
+    : r.tramos.map((t) => Formatos.intervalo(t.inicio, t.fin)).join(', ');

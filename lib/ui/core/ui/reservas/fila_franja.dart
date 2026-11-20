@@ -45,8 +45,8 @@ class FilaFranja extends StatelessWidget {
               if (alPulsar != null) ...[
                 Icon(
                   seleccionada
-                      ? Icons.radio_button_checked_rounded
-                      : Icons.radio_button_unchecked_rounded,
+                      ? Icons.check_box_rounded
+                      : Icons.check_box_outline_blank_rounded,
                   size: 20,
                   color: seleccionada
                       ? TemaApp.acento

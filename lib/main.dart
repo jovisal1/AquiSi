@@ -34,6 +34,7 @@ void main() {
   final disponibilidadRepository = DisponibilidadRepository(
     service: service,
     espacios: espaciosRepository,
+    reservas: reservasRepository,
   );
 
   // Las dos pantallas raíz se construyen aquí, donde están todas las

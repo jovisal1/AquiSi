@@ -1,4 +1,5 @@
 import '../../domain/models/reserva.dart';
+import '../../domain/models/tramo_reserva.dart';
 import '../services/datos_simulados_service.dart';
 import 'conversiones.dart';
 import 'espacios_repository.dart';
@@ -76,12 +77,12 @@ class ReservasRepository {
           espacio: espacio!,
           usuario: usuario!,
           actividad: dto.actividad,
-          inicio: inicio,
-          fin: fin,
+          modalidad: ModalidadReserva.porHoras,
+          tramos: [TramoReserva(inicio: inicio, fin: fin)],
           asistentes: dto.asistentes,
           estado: estado,
           serviciosContratados: servicios,
-          tarifaHoraCentimos: dto.tarifaHoraCentimos,
+          tarifaCentimos: dto.tarifaHoraCentimos,
           precioTotalCentimos: dto.precioTotalCentimos,
           moneda: dto.moneda,
         );
@@ -92,11 +93,26 @@ class ReservasRepository {
   int _nuevas = 0;
 
   Reserva registrar(Reserva solicitud) {
-    comprobar(solicitud.fin.isAfter(solicitud.inicio), 'Intervalo inválido');
+    final tramos = solicitud.tramos;
+    comprobar(tramos.isNotEmpty, 'Reserva sin horario');
+    for (var i = 0; i < tramos.length; i++) {
+      comprobar(tramos[i].fin.isAfter(tramos[i].inicio), 'Intervalo inválido');
+      if (i > 0) {
+        comprobar(
+          !tramos[i].inicio.isBefore(tramos[i - 1].fin),
+          'Tramos desordenados o solapados',
+        );
+      }
+    }
+    comprobar(
+      !tramos.any(
+        (t) => estaOcupado(solicitud.espacio.id, t.inicio, t.fin),
+      ),
+      'El horario ya está reservado',
+    );
     comprobar(
       solicitud.precioTotalCentimos ==
-          solicitud.tarifaHoraCentimos * solicitud.duracion.inHours +
-              solicitud.totalServiciosCentimos,
+          solicitud.alquilerCentimos + solicitud.totalServiciosCentimos,
       'Importe incoherente',
     );
     _nuevas++;
@@ -105,18 +121,26 @@ class ReservasRepository {
       espacio: solicitud.espacio,
       usuario: solicitud.usuario,
       actividad: solicitud.actividad,
-      inicio: solicitud.inicio,
-      fin: solicitud.fin,
+      modalidad: solicitud.modalidad,
+      tramos: tramos,
       asistentes: solicitud.asistentes,
       estado: solicitud.estado,
       serviciosContratados: solicitud.serviciosContratados,
-      tarifaHoraCentimos: solicitud.tarifaHoraCentimos,
+      tarifaCentimos: solicitud.tarifaCentimos,
       precioTotalCentimos: solicitud.precioTotalCentimos,
       moneda: solicitud.moneda,
     );
     _reservas.add(reserva);
     return reserva;
   }
+
+  bool estaOcupado(String espacioId, DateTime inicio, DateTime fin) =>
+      _reservas.any(
+        (r) =>
+            r.espacio.id == espacioId &&
+            r.estado != EstadoReserva.cancelada &&
+            r.tramos.any((t) => t.inicio.isBefore(fin) && inicio.isBefore(t.fin)),
+      );
 
   List<Reserva> obtenerPorUsuario(String id) =>
       List.unmodifiable(_reservas.where((r) => r.usuario.id == id));

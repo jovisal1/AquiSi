@@ -3,12 +3,14 @@ import '../../domain/models/franja_disponibilidad.dart';
 import '../services/datos_simulados_service.dart';
 import 'conversiones.dart';
 import 'espacios_repository.dart';
+import 'reservas_repository.dart';
 
 class DisponibilidadRepository {
   DisponibilidadRepository({
     required DatosSimuladosService service,
     required EspaciosRepository espacios,
-  }) {
+    required ReservasRepository reservas,
+  }) : _reservas = reservas {
     final claves = <String>{};
     _dias = List.unmodifiable(
       service.leerDisponibilidad().map((dto) {
@@ -58,6 +60,7 @@ class DisponibilidadRepository {
       }),
     );
   }
+  final ReservasRepository _reservas;
   late final List<DisponibilidadDia> _dias;
   List<DisponibilidadDia> obtenerSieteDias(String id, DateTime desde) =>
       obtenerDias(id, desde, 7);
@@ -81,6 +84,22 @@ class DisponibilidadRepository {
             .toList()
           ..sort((a, b) => a.fecha.compareTo(b.fecha));
     comprobar(lista.length == cantidad, 'Periodo incompleto en la fuente');
-    return List.unmodifiable(lista);
+    // Las franjas ya reservadas en la app dejan de estar disponibles.
+    return List.unmodifiable([
+      for (final dia in lista)
+        DisponibilidadDia(
+          espacioId: dia.espacioId,
+          fecha: dia.fecha,
+          franjas: [
+            for (final f in dia.franjas)
+              FranjaDisponibilidad(
+                inicio: f.inicio,
+                fin: f.fin,
+                disponible:
+                    f.disponible && !_reservas.estaOcupado(id, f.inicio, f.fin),
+              ),
+          ],
+        ),
+    ]);
   }
 }
