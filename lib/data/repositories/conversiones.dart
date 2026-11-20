@@ -44,6 +44,7 @@ Espacio convertirEspacio(EspacioDto dto) => Espacio(
       .toList(),
   aforo: dto.aforo,
   precioHoraCentimos: dto.precioHoraCentimos,
+  precioDiaCentimos: dto.precioDiaCentimos,
   actividades: dto.actividades,
   equipamiento: dto.equipamiento,
   contacto: convertirContactoLocal(dto.contacto),

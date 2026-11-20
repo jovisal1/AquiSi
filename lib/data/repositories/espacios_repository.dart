@@ -9,7 +9,10 @@ class EspaciosRepository {
     _espacios = List.unmodifiable(
       origen.map((dto) {
         comprobar(
-          dto.aforo > 0 && dto.precioHoraCentimos >= 0 && dto.moneda == 'EUR',
+          dto.aforo > 0 &&
+              dto.precioHoraCentimos >= 0 &&
+              dto.precioDiaCentimos >= 0 &&
+              dto.moneda == 'EUR',
           'Aforo, tarifa o moneda inválidos',
         );
         comprobar(

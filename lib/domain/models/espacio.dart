@@ -15,6 +15,7 @@ class Espacio {
     required List<ServicioExtra> serviciosDisponibles,
     required this.aforo,
     required this.precioHoraCentimos,
+    required this.precioDiaCentimos,
     required List<String> actividades,
     required List<String> equipamiento,
     required this.contacto,
@@ -35,6 +36,7 @@ class Espacio {
   final List<ServicioExtra> serviciosDisponibles;
   final int aforo;
   final int precioHoraCentimos;
+  final int precioDiaCentimos;
   final List<String> actividades;
   final List<String> equipamiento;
   final ContactoLocal contacto;
